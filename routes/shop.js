@@ -8,9 +8,16 @@ const checkoutController = require('../controllers/shop/CheckoutController')
 const router = express.Router();
 
 router.get('/', indexController.getIndex);
+
+
 router.get('/products', shopController.getProducts);
 router.get('/product/:productId', shopController.getProduct);
+
+
 router.get('/cart', cartController.getCarts)
+router.post('/cart', cartController.postCart)
+
+
 router.get('/orders', ordersController.getOrders)
 router.get('/checkout', checkoutController.getCheckout)
 
