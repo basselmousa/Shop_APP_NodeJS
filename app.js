@@ -2,11 +2,19 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
+
+/**
+ * Sequelize Definition
+
 const sequelize = require('./util/database');
 
 
 const User = require('./models/user');
 const relations = require('./realations');
+
+*/
+
+const mongoConnect = require('./util/mongoDatabase').mongoConnect;
 
 const app = express();
 /** End System Require */
@@ -18,9 +26,12 @@ const errorsController = require('./controllers/handlingErrors/error')
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-const adminRoutes = require('./routes/admin');
-const shopRoutes = require('./routes/shop');
-
+// const adminRoutes = require('./routes/admin');
+const adminRoutes = require('./routes/mongoRoutes/admin');
+// const shopRoutes = require('./routes/shop');
+const shopRoutes = require('./routes/mongoRoutes/shop');
+/**
+ * Create Dummy User With Sequelize
 app.use((req, res, next) => {
     User.findByPk(1)
         .then(user=>{
@@ -31,6 +42,8 @@ app.use((req, res, next) => {
             console.log(err)
         });
 });
+*/
+
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -41,6 +54,8 @@ app.use(errorsController.notFound404Error);
 
 
 // {force:true}
+/**
+ * Sequelize Sync Tables
 sequelize.sync()
     .then(result => {
         // console.log(result)
@@ -68,3 +83,9 @@ sequelize.sync()
         console.log(err)
     });
 
+*/
+
+
+mongoConnect(() =>{
+    app.listen(3000);
+})
