@@ -26,8 +26,8 @@ class Product {
             // update
             dbOperation = db.collection(Product.COLLECTION_NAME)
                 .updateOne({
-                    _id : new mongodb.ObjectID(this._id)
-                }, {$set : this});
+                    _id: new mongodb.ObjectID(this._id)
+                }, {$set: this});
         } else {
             dbOperation = db.collection(Product.COLLECTION_NAME)
                 .insertOne(this);
@@ -73,9 +73,29 @@ class Product {
     }
 
     editProduct(productId) {
+        const __mongoId = new mongodb.ObjectID(productId);
         const db = getDb();
         return db.collection(Product.COLLECTION_NAME)
-            .upda
+            .updateOne({_id: __mongoId}, this)
+            .then(result => {
+                console.log(result);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    static deleteById(productId){
+        const __documentId = new mongodb.ObjectID(productId);
+        const db = getDb();
+        return db.collection(Product.COLLECTION_NAME)
+            .deleteOne({_id : __documentId})
+            .then(result =>{
+                console.log('Deleted');
+            })
+            .catch(err => {
+                console.log(err);
+            });
     }
 }
 
