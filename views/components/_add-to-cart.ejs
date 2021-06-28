@@ -1,4 +1,5 @@
 <form action="/cart" method="post">
     <button type="submit" class="btn">Add To Cart</button>
-    <input type="hidden" name="productId" value="<%= product.id%>">
+<!--   In SQL {id} in Mongo {_id} -->
+    <input type="hidden" name="productId" value="<%= product._id%>">
 </form>
