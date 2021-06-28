@@ -15,7 +15,7 @@ const relations = require('./realations');
 */
 
 const mongoConnect = require('./util/mongoDatabase').mongoConnect;
-
+const User = require('./models/mongoModels/user');
 const app = express();
 /** End System Require */
 
@@ -43,7 +43,20 @@ app.use((req, res, next) => {
         });
 });
 */
+ /** Fetch user By Mongo */
+app.use((req, res, next) => {
+    User.findById('60da5aec39c3ee8d136bd59b')
+        .then(user=>{
+            req.user = user;
+            next();
+        })
+        .catch(err => {
+            console.log(err);
+            next();
+        });
 
+});
+// 60da5aec39c3ee8d136bd59b
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
