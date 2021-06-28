@@ -8,9 +8,11 @@ class Product {
     _id;
     price;
     description;
+    userId;
     imageUrl;
 
-    constructor(title, price, description, imageUrl, _id = null) {
+    constructor(title, price, description, imageUrl, _id = null, userId) {
+        this.userId = userId;
         this._id = _id;
         this.title = title;
         this.price = price;
