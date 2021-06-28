@@ -1,8 +1,32 @@
-const fs = require('fs')
-const path = require('path')
-const pathHelper = require('../util/path')
-const myPath = path.join(pathHelper, 'data', 'cart.json')
-module.exports = class Cart {
+const Sequelize = require('sequelize');
+const sequelize = require('../util/database');
+const User = require('./user');
+const Products = require('./product');
+const CartItem = require('./cart-item');
+const Cart = sequelize.define('cart', {
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        allowNull: false,
+        autoIncrement: true,
+    },
+
+});
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Products.belongsToMany(Cart, {through: CartItem});
+Cart.belongsToMany(Products, {through: CartItem});
+
+module.exports = Cart;
+
+/**
+ * Old Way Without Sequelize
+
+ const fs = require('fs')
+ const path = require('path')
+ const pathHelper = require('../util/path')
+ const myPath = path.join(pathHelper, 'data', 'cart.json')
+ module.exports = class Cart {
     static addProduct(id, price) {
         // Fetch the previous cart
         fs.readFile(myPath, (err, fileContent) => {
@@ -64,3 +88,4 @@ module.exports = class Cart {
         })
     }
 };
+ */
