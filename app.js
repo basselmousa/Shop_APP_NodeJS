@@ -17,6 +17,7 @@ const relations = require('./realations');
 const mongoConnect = require('./util/mongoDatabase').mongoConnect;
 const User = require('./models/mongoModels/user');
 const app = express();
+const mongoose = require('mongoose');
 /** End System Require */
 
 /** Start Custom Require*/
@@ -98,7 +99,24 @@ sequelize.sync()
 
 */
 
-
+/**
+ * Mongo Connect
 mongoConnect(() =>{
     app.listen(3000);
+})
+
+*/
+
+/**
+ * Mongoose Connect
+ */
+
+mongoose.connect('mongodb+srv://bassel:mlD0mm1htbQbW74P@nodejs-shop-app.f915l.mongodb.net/shop-app?retryWrites=true&w=majority',
+    {
+    useNewUrlParser: true, useUnifiedTopology: true
+}).then(result =>{
+    console.log('CONNECTED BY MONGOOSE');
+    app.listen(3000);
+}).catch(err =>{
+    console.log(err)
 })
