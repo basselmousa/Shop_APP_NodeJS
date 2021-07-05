@@ -45,9 +45,9 @@ app.use((req, res, next) => {
 */
  /** Fetch user By Mongo */
 app.use((req, res, next) => {
-    User.findById('60da5aec39c3ee8d136bd59b')
+    User.findById('60e25e63f86afee8c4ec77dc')
         .then(user=>{
-            req.user = user;
+            req.user = new User(user.name, user.email, user.cart, user._id);
             next();
         })
         .catch(err => {
@@ -56,7 +56,7 @@ app.use((req, res, next) => {
         });
 
 });
-// 60da5aec39c3ee8d136bd59b
+// 60e25e63f86afee8c4ec77dc
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
