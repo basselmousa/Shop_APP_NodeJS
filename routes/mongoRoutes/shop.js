@@ -1,7 +1,7 @@
 const express = require('express');
 
 const shopController = require('../../controllers/mongoControllers/shop/ShopController');
-// const cartController = require('../../controllers/mongoControllers/shop/CartController');
+const cartController = require('../../controllers/mongoControllers/shop/CartController');
 // const ordersController = require('../../controllers/mongoControllers/shop/OrdersController');
 const indexController = require('../../controllers/mongoControllers/shop/IndexController');
 // const checkoutController = require('../../controllers/mongoControllers/shop/CheckoutController');
@@ -14,9 +14,9 @@ router.get('/products', shopController.getProducts);
 router.get('/product/:productId', shopController.getProduct);
 //
 //
-// router.get('/cart', cartController.getCarts)
-// router.post('/cart', cartController.postCart)
-// router.post('/cart-delete-item', cartController.deleteCartItem)
+router.get('/cart', cartController.getCarts)
+router.post('/cart', cartController.postCart)
+router.post('/cart-delete-item', cartController.deleteCartItem)
 //
 //
 // router.get('/orders', ordersController.getOrdersMethod)
