@@ -140,7 +140,12 @@ exports.deleteProduct = (req, res, next) => {
     Product.deleteById(productId)
         .then(() => {
             console.log("DESTROYED PRODUCT");
-            res.redirect('/admin/products')
+            return req.user.updateCartWhenDeleteProduct(productId);
+
+        })
+        .then(result =>{
+            console.log("CART UPDATED");
+            res.redirect('/admin/products');
         })
         .catch(err => {
             console.log(err);
