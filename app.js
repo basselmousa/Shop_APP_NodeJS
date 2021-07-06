@@ -14,8 +14,8 @@ const relations = require('./realations');
 
 */
 
-const mongoConnect = require('./util/mongoDatabase').mongoConnect;
-const User = require('./models/mongoModels/user');
+// const mongoConnect = require('./util/mongoDatabase').mongoConnect;
+// const User = require('./models/mongoModels/user');
 const app = express();
 const mongoose = require('mongoose');
 /** End System Require */
@@ -45,18 +45,18 @@ app.use((req, res, next) => {
 });
 */
  /** Fetch user By Mongo */
-app.use((req, res, next) => {
-    User.findById('60e25e63f86afee8c4ec77dc')
-        .then(user=>{
-            req.user = new User(user.name, user.email, user.cart, user._id);
-            next();
-        })
-        .catch(err => {
-            console.log(err);
-            next();
-        });
-
-});
+// app.use((req, res, next) => {
+//     User.findById('60e25e63f86afee8c4ec77dc')
+//         .then(user=>{
+//             req.user = new User(user.name, user.email, user.cart, user._id);
+//             next();
+//         })
+//         .catch(err => {
+//             console.log(err);
+//             next();
+//         });
+//
+// });
 // 60e25e63f86afee8c4ec77dc
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -111,7 +111,7 @@ mongoConnect(() =>{
  * Mongoose Connect
  */
 
-mongoose.connect('mongodb+srv://bassel:mlD0mm1htbQbW74P@nodejs-shop-app.f915l.mongodb.net/shop-app?retryWrites=true&w=majority',
+mongoose.connect('mongodb+srv://bassel:aOvzzLNTzxs9Jj5G@node-js-shop-app.q8aa6.mongodb.net/shop?retryWrites=true&w=majority',
     {
     useNewUrlParser: true, useUnifiedTopology: true
 }).then(result =>{
