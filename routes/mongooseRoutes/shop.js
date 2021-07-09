@@ -1,9 +1,9 @@
 const express = require('express');
 
-const shopController = require('../../controllers/mongoControllers/shop/ShopController');
-const cartController = require('../../controllers/mongoControllers/shop/CartController');
-const ordersController = require('../../controllers/mongoControllers/shop/OrdersController');
-const indexController = require('../../controllers/mongoControllers/shop/IndexController');
+const shopController = require('../../controllers/mongooseControllers/shop/ShopController');
+const cartController = require('../../controllers/mongooseControllers/shop/CartController');
+const ordersController = require('../../controllers/mongooseControllers/shop/OrdersController');
+const indexController = require('../../controllers/mongooseControllers/shop/IndexController');
 // const checkoutController = require('../../controllers/mongoControllers/shop/CheckoutController');
 const router = express.Router();
 
