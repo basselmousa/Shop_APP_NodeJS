@@ -12,15 +12,22 @@
         <ul class="cart__item-list">
             <% products.forEach(product =>{ %>
                 <li class="cart__item">
+                 <!--   <h1>
+                        <! product.title !>
+                    </h1>-->
                     <h1>
-                        <%= product.title %>
+                        <!--                        Mongoose Declaration-->
+                        <%= product.productId.title %>
                     </h1>
                     <h2>Quantity <%= product.quantity %> </h2>
 <!--                    in Sequelize-->
 <!--                    <h2>Quantity <! product.cartItem.quantaty !> </h2>-->
                     <form action="/cart-delete-item" method="post">
                         <button class="btn danger" type="submit">Delete</button>
-                        <input type="hidden" name="productId" value="<%= product._id %>">
+<!--                        <input type="hidden" name="productId" value="<%= product._id %>">-->
+<!--                        Mongoose Declaration-->
+                        <input type="hidden" name="productId" value="<%= product.productId._id %>">
+
                     </form>
                 </li>
             <% }); %>
