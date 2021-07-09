@@ -28,9 +28,9 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 // const adminRoutes = require('./routes/admin');
-const adminRoutes = require('./routes/mongoRoutes/admin');
+const adminRoutes = require('./routes/mongooseRoutes/admin');
 // const shopRoutes = require('./routes/shop');
-const shopRoutes = require('./routes/mongoRoutes/shop');
+const shopRoutes = require('./routes/mongooseRoutes/shop');
 /**
  * Create Dummy User With Sequelize
 app.use((req, res, next) => {
@@ -44,20 +44,28 @@ app.use((req, res, next) => {
         });
 });
 */
- /** Fetch user By Mongo */
-// app.use((req, res, next) => {
-//     User.findById('60e25e63f86afee8c4ec77dc')
-//         .then(user=>{
-//             req.user = new User(user.name, user.email, user.cart, user._id);
-//             next();
-//         })
-//         .catch(err => {
-//             console.log(err);
-//             next();
-//         });
-//
-// });
+ /** Fetch user By Mongo And Mongoose */
+app.use((req, res, next) => {
+    User.findById('60e847e38559d83b9c4f82de')
+        .then(user=>{
+            req.user = user;
+            next();
+        })
+        .catch(err => {
+            console.log(err);
+            next();
+        });
+
+});
 // 60e25e63f86afee8c4ec77dc
+
+
+/**
+ *  For Mongoose
+ */
+
+const User = require('./models/mongooseModels/user');
+
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -116,6 +124,21 @@ mongoose.connect('mongodb+srv://bassel:aOvzzLNTzxs9Jj5G@node-js-shop-app.q8aa6.m
     useNewUrlParser: true, useUnifiedTopology: true
 }).then(result =>{
     console.log('CONNECTED BY MONGOOSE');
+    User.findOne()
+        .then(user=>{
+            if (!user){
+                const user = new User({
+                    name: 'Bassel',
+                    email: 'bassel@bassel.com',
+                    cart: {
+                        items:[],
+                    }
+                });
+                user.save();
+            }
+        });
+
+
     app.listen(3000);
 }).catch(err =>{
     console.log(err)
