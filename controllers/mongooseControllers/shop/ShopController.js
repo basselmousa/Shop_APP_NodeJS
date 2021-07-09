@@ -1,7 +1,7 @@
-const Product = require('../../../models/mongoModels/product')
+const Product = require('../../../models/mongooseModels/product')
 exports.getProducts = (req, res, next) => {
 
-    Product.fetchAll()
+    Product.find()
         .then(products =>{
             res.render('shop/product-list', {
                 prods: products,

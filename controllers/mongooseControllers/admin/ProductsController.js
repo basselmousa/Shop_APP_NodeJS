@@ -1,7 +1,7 @@
 const mongodb = require('mongodb');
 
 const Product = require('../../../models/mongooseModels/product')
-const ObjectId = mongodb.ObjectID;
+
 exports.getAddProduct = (req, res, next) => {
     res.render('admin/edit-product', {
         pageTitle: 'Add Product',
@@ -11,8 +11,10 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-    Product.fetchAll()
+    Product.find()
+        // .populate('userId')
         .then(products => {
+            console.log(products)
             res.render('admin/products', {
                 prods: products,
                 pageTitle: 'Admin Products',
@@ -56,8 +58,9 @@ exports.postAddProduct = (req, res, next) => {
     const product = new Product({
         title: title,
         description: description,
-        imageUrl:imageURl,
-        price:price
+        imageUrl: imageURl,
+        price: price,
+        userId: req.user
     });
     product.save()
         .then(result => {
@@ -128,30 +131,37 @@ exports.postEditProduct = (req, res, next) => {
     const updatedDescription = req.body.description;
     const updatedPrice = req.body.price;
 
-    const product = new Product(updatedTitle, updatedPrice, updatedDescription, updatedImageURL, new ObjectId(productId))
-    product.save()
+    Product.findById(productId)
+        .then(product => {
+            product.title = updatedTitle;
+            product.imageUrl = updatedImageURL;
+            product.description = updatedDescription;
+            product.price = updatedPrice;
+            return product.save();
+        })
         .then(result => {
             console.log("UPDATED PRODUCT");
             res.redirect('/admin/products')
-        }).catch(err => {
-        console.log(err);
-    });
+        })
+        .catch(err => {
+            console.log(err);
+        });
 
 }
 
 
 exports.deleteProduct = (req, res, next) => {
     const productId = req.body.productId
-    Product.deleteById(productId)
+    Product.findByIdAndDelete(productId)
         .then(() => {
             console.log("DESTROYED PRODUCT");
-            return req.user.updateCartWhenDeleteProduct(productId);
-
-        })
-        .then(result =>{
-            console.log("CART UPDATED");
+            // return req.user.updateCartWhenDeleteProduct(productId);
             res.redirect('/admin/products');
         })
+        // .then(result => {
+        //     console.log("CART UPDATED");
+        //     res.redirect('/admin/products');
+        // })
         .catch(err => {
             console.log(err);
         })

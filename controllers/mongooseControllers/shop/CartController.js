@@ -1,9 +1,12 @@
-const Product = require('../../../models/mongoModels/product')
+const Product = require('../../../models/mongooseModels/product')
 // const User = require('../../../models/mongoModels/user')
 exports.getCarts = (req, res, next) => {
 
-    req.user.getCart()
-        .then(cartProducts => {
+    req.user.populate('cart.items.productId')
+        .execPopulate()
+        .then(user => {
+            console.log(user.cart.items)
+            let cartProducts = user.cart.items;
             res.render('shop/cart', {
                 pageTitle: 'Your Cart',
                 path: '/cart',
