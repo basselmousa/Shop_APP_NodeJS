@@ -31,6 +31,7 @@ app.set('views', 'views');
 const adminRoutes = require('./routes/mongooseRoutes/admin');
 // const shopRoutes = require('./routes/shop');
 const shopRoutes = require('./routes/mongooseRoutes/shop');
+const authRoutes = require('./routes/mongooseRoutes/auth');
 /**
  * Create Dummy User With Sequelize
 app.use((req, res, next) => {
@@ -71,6 +72,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 
 app.use(errorsController.notFound404Error);
 
