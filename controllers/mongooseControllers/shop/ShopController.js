@@ -7,6 +7,7 @@ exports.getProducts = (req, res, next) => {
                 prods: products,
                 pageTitle: 'All Products',
                 path: '/products',
+                isAuthenticated: req.isLoggedIn,
             });
         })
         .catch(err =>{
@@ -35,6 +36,7 @@ exports.getProduct = (req, res, next) => {
             product: product,
             pageTitle: 'product.title',
             path: '/product-detail/' + productId,
+            isAuthenticated: req.isLoggedIn
         });
     }).catch(err => console.log(err));
 

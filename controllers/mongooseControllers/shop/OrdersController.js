@@ -8,7 +8,8 @@ exports.getOrdersMethod = (req, res, next) => {
             res.render('shop/mongooseOrders', {
                 pageTitle: 'Orders',
                 path: '/orders',
-                orders: orders
+                orders: orders,
+                isAuthenticated: req.isLoggedIn
             });
 
         })
