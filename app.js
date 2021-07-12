@@ -2,7 +2,7 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const session = require('express-session');
 /**
  * Sequelize Definition
 
@@ -69,6 +69,13 @@ const User = require('./models/mongooseModels/user');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(session({
+    secret: 'my secret', // in production should be a long string value
+    resave: false,
+    saveUninitialized: false,
+
+}))
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
