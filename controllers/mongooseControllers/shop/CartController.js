@@ -1,8 +1,11 @@
 const Product = require('../../../models/mongooseModels/product')
-// const User = require('../../../models/mongoModels/user')
+// const User = require('../../../models/mongooseModels/user')
 exports.getCarts = (req, res, next) => {
-
-    req.user.populate('cart.items.productId')
+    // console.log(req.session.user)
+    // let user = User.find({_id: req.session.user._id});
+    // let user = req.session.user;
+    // console.log(req.session.user)
+    req.session.user.populate('cart.items.productId')
         .execPopulate()
         .then(user => {
             console.log(user.cart.items)
@@ -11,7 +14,7 @@ exports.getCarts = (req, res, next) => {
                 pageTitle: 'Your Cart',
                 path: '/cart',
                 products: cartProducts,
-                isAuthenticated: req.isLoggedIn
+                isAuthenticated: req.session.isLoggedIn
             });
         })
         .catch(err => {
@@ -42,7 +45,7 @@ exports.postCart = (req, res, next) => {
 
     Product.findById(productId)
         .then(product => {
-            return req.user.addToCart(product);
+            return req.session.user.addToCart(product);
         })
         .then(result => {
             console.log(result);
@@ -109,7 +112,7 @@ exports.postCart = (req, res, next) => {
 exports.deleteCartItem = (req, res, next) => {
     const productId = req.body.productId;
 
-    req.user.deleteCartItem(productId)
+    req.session.user.deleteCartItem(productId)
         // .then(cart => {
         //     return cart.getProducts({
         //         where: {
