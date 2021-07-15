@@ -155,21 +155,6 @@ mongoose.connect('mongodb+srv://bassel:aOvzzLNTzxs9Jj5G@node-js-shop-app.q8aa6.m
         useNewUrlParser: true, useUnifiedTopology: true
     }).then(result => {
     console.log('CONNECTED BY MONGOOSE');
-    User.findOne()
-        .then(user => {
-            if (!user) {
-                const user = new User({
-                    name: 'Bassel',
-                    email: 'bassel@bassel.com',
-                    cart: {
-                        items: [],
-                    }
-                });
-                user.save();
-            }
-        });
-
-
     app.listen(3000);
 }).catch(err => {
     console.log(err)
