@@ -1,12 +1,22 @@
+const User = require("../../../models/mongooseModels/user");
 exports.getLogin = (req, res, next) => {
-    const isLoggedIn = req.get('Cookie').trim().split('=')[1] === 'true';
+
+    console.log(req.session.isLoggedIn);
     res.render('auth/login', {
         pageTitle: 'Login',
         path: '/login',
-        isAuthenticated: isLoggedIn
+        isAuthenticated: false
     });
 };
 exports.postLogin = (req, res, next) => {
-    res.setHeader('Set-Cookie', 'isLoggedIn=true');
-    res.redirect('/');
+
+    User.findById('60e847e38559d83b9c4f82de')
+        .then(user=>{
+            req.session.user = user;
+            req.session.isLoggedIn = true;
+            res.redirect('/');
+        })
+        .catch(err => {
+            console.log(err);
+        });
 };
