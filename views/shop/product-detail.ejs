@@ -12,9 +12,10 @@
     <div class="image">
         <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
     </div>
-    <h2><%= product.price%></h2>
-    <p><%= product.description%></p>
-
-    <%- include('../components/_add-to-cart') %>
+    <h2><%= product.price %></h2>
+    <p><%= product.description %></p>
+    <% if (isAuthenticated){ %>
+        <%- include('../components/_add-to-cart') %>
+    <% } %>
 </main>
 <%- include('../includes/end.ejs') %>
