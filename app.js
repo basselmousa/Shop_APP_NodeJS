@@ -7,13 +7,13 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 /**
  * Sequelize Definition
 
-const sequelize = require('./util/database');
+ const sequelize = require('./util/database');
 
 
-const User = require('./models/user');
-const relations = require('./realations');
+ const User = require('./models/user');
+ const relations = require('./realations');
 
-*/
+ */
 
 // const mongoConnect = require('./util/mongoDatabase').mongoConnect;
 // const User = require('./models/mongoModels/user');
@@ -39,7 +39,7 @@ const shopRoutes = require('./routes/mongooseRoutes/shop');
 const authRoutes = require('./routes/mongooseRoutes/auth');
 /**
  * Create Dummy User With Sequelize
-app.use((req, res, next) => {
+ app.use((req, res, next) => {
     User.findByPk(1)
         .then(user=>{
             req.user = user;
@@ -49,22 +49,23 @@ app.use((req, res, next) => {
             console.log(err)
         });
 });
-*/
- /** Fetch user By Mongo And Mongoose */
-app.use((req, res, next) => {
-    User.findById('60e847e38559d83b9c4f82de')
-        .then(user=>{
-            req.user = user;
-            next();
-        })
-        .catch(err => {
-            console.log(err);
-            next();
-        });
-
-});
+ */
+/** Fetch user By Mongo And Mongoose */
+// app.use((req, res, next) => {
+//     User.findById('60e847e38559d83b9c4f82de')
+//         .then(user=>{
+//             req.user = user;
+//             next();
+//         })
+//         .catch(err => {
+//             console.log(err);
+//             next();
+//         });
+//
+// });
 // 60e25e63f86afee8c4ec77dc
 
+/** Fetch user By Session */
 
 /**
  *  For Mongoose
@@ -81,10 +82,26 @@ app.use(session({
     saveUninitialized: false,
     store: store
 }))
+app.use((req, res, next) => {
+    if (!req.session.user) {
+        return next();
+    }
+    console.log(req.session)
+    User.findById(req.session.user._id)
+        .then(user => {
+            req.user = user;
+            next();
+        })
+        .catch(err => {
+            // console.log(err);
 
+        });
+
+});
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
+
 
 app.use(errorsController.notFound404Error);
 
@@ -92,12 +109,12 @@ app.use(errorsController.notFound404Error);
 // {force:true}
 /**
  * Sequelize Sync Tables
-sequelize.sync()
-    .then(result => {
+ sequelize.sync()
+ .then(result => {
         // console.log(result)
         return User.findByPk(1);
     })
-    .then(user => {
+ .then(user => {
         if (!user) {
             return User.create({
                 name: 'Bassel',
@@ -108,26 +125,26 @@ sequelize.sync()
         // Every things Returned in Then Block Converted To Promise
         return user;
     })
-    .then(user => {
+ .then(user => {
         // console.log(user);
         return user.createCart();
     })
-    .then(cart =>{
+ .then(cart =>{
         app.listen(3000);
     })
-    .catch(err => {
+ .catch(err => {
         console.log(err)
     });
 
-*/
+ */
 
 /**
  * Mongo Connect
-mongoConnect(() =>{
+ mongoConnect(() =>{
     app.listen(3000);
 })
 
-*/
+ */
 
 /**
  * Mongoose Connect
@@ -135,17 +152,17 @@ mongoConnect(() =>{
 
 mongoose.connect('mongodb+srv://bassel:aOvzzLNTzxs9Jj5G@node-js-shop-app.q8aa6.mongodb.net/shop?retryWrites=true&w=majority',
     {
-    useNewUrlParser: true, useUnifiedTopology: true
-}).then(result =>{
+        useNewUrlParser: true, useUnifiedTopology: true
+    }).then(result => {
     console.log('CONNECTED BY MONGOOSE');
     User.findOne()
-        .then(user=>{
-            if (!user){
+        .then(user => {
+            if (!user) {
                 const user = new User({
                     name: 'Bassel',
                     email: 'bassel@bassel.com',
                     cart: {
-                        items:[],
+                        items: [],
                     }
                 });
                 user.save();
@@ -154,6 +171,6 @@ mongoose.connect('mongodb+srv://bassel:aOvzzLNTzxs9Jj5G@node-js-shop-app.q8aa6.m
 
 
     app.listen(3000);
-}).catch(err =>{
+}).catch(err => {
     console.log(err)
 })
