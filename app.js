@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 /**
  * Sequelize Definition
 
@@ -18,6 +19,10 @@ const relations = require('./realations');
 // const User = require('./models/mongoModels/user');
 const app = express();
 const mongoose = require('mongoose');
+const store = new MongoDBStore({
+    uri: 'mongodb+srv://bassel:aOvzzLNTzxs9Jj5G@node-js-shop-app.q8aa6.mongodb.net/shop?retryWrites=true&w=majority',
+    collection: 'sessions'
+});
 /** End System Require */
 
 /** Start Custom Require*/
@@ -74,7 +79,7 @@ app.use(session({
     secret: 'my secret', // in production should be a long string value
     resave: false,
     saveUninitialized: false,
-
+    store: store
 }))
 
 app.use('/admin', adminRoutes);
