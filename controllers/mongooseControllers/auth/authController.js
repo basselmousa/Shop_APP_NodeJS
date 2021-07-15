@@ -1,7 +1,6 @@
 const User = require("../../../models/mongooseModels/user");
 exports.getLogin = (req, res, next) => {
 
-    console.log(req.session.isLoggedIn);
     res.render('auth/login', {
         pageTitle: 'Login',
         path: '/login',
@@ -14,9 +13,19 @@ exports.postLogin = (req, res, next) => {
         .then(user=>{
             req.session.user = user;
             req.session.isLoggedIn = true;
-            res.redirect('/');
+            req.session.save((err) =>{
+                console.log(err)
+                res.redirect('/');
+            })
         })
         .catch(err => {
             console.log(err);
         });
 };
+
+exports.postLogout = (req, res, next) =>{
+    req.session.destroy((err)=>{
+        console.log(err)
+        res.redirect('/');
+    })
+}

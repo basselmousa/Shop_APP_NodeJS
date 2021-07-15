@@ -2,7 +2,7 @@ const Product = require('../../../models/mongooseModels/product');
 const Order = require('../../../models/mongooseModels/order');
 exports.getOrdersMethod = (req, res, next) => {
 
-    Order.find({"user.userId" : req.session.user._id})
+    Order.find({"user.userId" : req.user._id})
         .then(orders => {
             console.log(orders)
             res.render('shop/mongooseOrders', {
@@ -22,7 +22,7 @@ exports.getOrdersMethod = (req, res, next) => {
 
 exports.postOrders = (req, res, next) => {
 
-    req.session.user
+    req.user
         .populate('cart.items.productId')
         .execPopulate()
         .then(user=>{
