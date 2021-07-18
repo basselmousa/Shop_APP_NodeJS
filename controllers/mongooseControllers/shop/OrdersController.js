@@ -9,7 +9,7 @@ exports.getOrdersMethod = (req, res, next) => {
                 pageTitle: 'Orders',
                 path: '/orders',
                 orders: orders,
-                isAuthenticated: req.session.isLoggedIn
+                // isAuthenticated: req.session.isLoggedIn
             });
 
         })
@@ -31,7 +31,7 @@ exports.postOrders = (req, res, next) => {
             });
             const order = new Order({
                 user: {
-                    name : req.user.name,
+                    email : req.user.email,
                     userId: req.user._id
                 },
                 products: products
