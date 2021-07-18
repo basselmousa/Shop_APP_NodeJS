@@ -6,19 +6,39 @@ exports.getLogin = (req, res, next) => {
     res.render('auth/login', {
         pageTitle: 'Login',
         path: '/login',
-        isAuthenticated: false
+        // isAuthenticated: false,
+        // csrfToken: req.csrfToken()
     });
 };
 exports.postLogin = (req, res, next) => {
 
-    User.findById('60e847e38559d83b9c4f82de')
+    const email = req.body.email;
+    const password = req.body.password;
+
+    User.findOne({email: email})
         .then(user => {
-            req.session.user = user;
-            req.session.isLoggedIn = true;
-            req.session.save((err) => {
-                console.log(err)
-                res.redirect('/');
-            })
+            if (!user){
+                return res.redirect('/login');
+            }
+            bcrypt.compare(password, user.password)
+                .then(doMatch =>{
+                    if (doMatch){
+                        req.session.user = user;
+                        req.session.isLoggedIn = true;
+                        req.session.save((err) => {
+                            console.log(err)
+                            res.redirect('/');
+                        })
+                    }
+                    else{
+                        res.redirect('/login');
+                    }
+                })
+                .catch(err =>{
+                    console.log(err);
+                    res.redirect('/login');
+                })
+
         })
         .catch(err => {
             console.log(err);
@@ -29,7 +49,8 @@ exports.getSignup = (req, res, next) => {
     res.render('auth/signup', {
         path: '/signup',
         pageTitle: 'Signup',
-        isAuthenticated: false
+        // isAuthenticated: false,
+        // csrfToken: req.csrfToken()
     });
 };
 

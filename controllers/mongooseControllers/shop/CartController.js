@@ -11,7 +11,7 @@ exports.getCarts = (req, res, next) => {
                 pageTitle: 'Your Cart',
                 path: '/cart',
                 products: cartProducts,
-                isAuthenticated: req.session.isLoggedIn
+                // isAuthenticated: req.session.isLoggedIn
             });
         })
         .catch(err => {

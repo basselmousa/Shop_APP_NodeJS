@@ -3,15 +3,17 @@ const mongodb = require('mongodb');
 const Product = require('../../../models/mongooseModels/product')
 
 exports.getAddProduct = (req, res, next) => {
+
     res.render('admin/edit-product', {
         pageTitle: 'Add Product',
         path: '/admin/add-product',
         editing: false,
-        isAuthenticated: req.session.isLoggedIn,
+        // isAuthenticated: req.session.isLoggedIn,
     });
 };
 
 exports.getProducts = (req, res, next) => {
+
     Product.find()
         // .populate('userId')
         .then(products => {
@@ -20,7 +22,7 @@ exports.getProducts = (req, res, next) => {
                 prods: products,
                 pageTitle: 'Admin Products',
                 path: '/admin/products',
-                isAuthenticated: req.session.isLoggedIn,
+                // isAuthenticated: req.session.isLoggedIn,
             });
         })
         .catch(err => console.log(err));
@@ -28,6 +30,7 @@ exports.getProducts = (req, res, next) => {
 
 
 exports.getEditProduct = (req, res, next) => {
+
     const editMode = req.query.edit
 
     if (!editMode) {
@@ -45,7 +48,7 @@ exports.getEditProduct = (req, res, next) => {
                 path: '/admin/edit-product',
                 editing: editMode,
                 product: product,
-                isAuthenticated: req.session.isLoggedIn,
+                // isAuthenticated: req.session.isLoggedIn,
             });
         })
         .catch(err => {
