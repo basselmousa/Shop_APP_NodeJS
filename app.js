@@ -4,6 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
+const csrf = require('csurf');
+
 /**
  * Sequelize Definition
 
@@ -29,6 +31,8 @@ const store = new MongoDBStore({
 const errorsController = require('./controllers/handlingErrors/error')
 /** End Custom Require */
 
+const csrfProtection = csrf();
+
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
@@ -37,6 +41,9 @@ const adminRoutes = require('./routes/mongooseRoutes/admin');
 // const shopRoutes = require('./routes/shop');
 const shopRoutes = require('./routes/mongooseRoutes/shop');
 const authRoutes = require('./routes/mongooseRoutes/auth');
+
+const GLOBAL_PROPERTIES = require('./helpers/globalVariablesForAllViews')
+
 /**
  * Create Dummy User With Sequelize
  app.use((req, res, next) => {
@@ -81,7 +88,11 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: store
-}))
+}));
+/** After Initializing Sessions Initialize CSRF Middleware */
+
+app.use(csrfProtection)
+
 app.use((req, res, next) => {
     if (!req.session.user) {
         return next();
@@ -98,6 +109,8 @@ app.use((req, res, next) => {
         });
 
 });
+
+app.use(GLOBAL_PROPERTIES);
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
