@@ -1,6 +1,14 @@
 const bcrypt = require('bcryptjs');
 
 const User = require("../../../models/mongooseModels/user");
+const nodemailer = require('nodemailer');
+const sendGridTransport = require('nodemailer-sendgrid-transport');
+
+const transporter = nodemailer.createTransport(sendGridTransport({
+    auth: {
+        api_key: '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',
+    }
+}));
 exports.getLogin = (req, res, next) => {
     let message = req.flash('error');
     if (message.length > 0) {
@@ -80,7 +88,8 @@ exports.postSignup = (req, res, next) => {
                 return res.redirect('/signup');
             }
             return bcrypt
-                .hash(password, 12).then(hashedPassword => {
+                .hash(password, 12)
+                .then(hashedPassword => {
                     const user = new User({
                         password: hashedPassword,
                         email: email,
@@ -92,10 +101,17 @@ exports.postSignup = (req, res, next) => {
                 })
                 .then((_) => {
                     res.redirect('/login')
-                });
-
+                    return transporter.sendMail({
+                        to: email,
+                        from: '3170601041@std.wise.edu.jo',
+                        subject: 'Signup Completed',
+                        html: '<h1> You Successfully signed up </h1>'
+                    })
+                })
+                .catch(err =>{
+                    console.log(err)
+                })
         })
-
         .catch(err => {
             console.log(err);
         });
