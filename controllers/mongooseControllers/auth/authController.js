@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
-const { validationResult } = require('express-validator/check')
+const {validationResult} = require('express-validator/check')
 
 const User = require("../../../models/mongooseModels/user");
 const nodemailer = require('nodemailer');
@@ -21,7 +21,10 @@ exports.getLogin = (req, res, next) => {
     res.render('auth/login', {
         pageTitle: 'Login',
         path: '/login',
-        errorMessage: message
+        errorMessage: message,
+        oldInput: {email: "", password: ""},
+        validationErrors: [],
+
         // isAuthenticated: false,
         // csrfToken: req.csrfToken()
     });
@@ -31,6 +34,18 @@ exports.postLogin = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
 
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).render('auth/login', {
+            pageTitle: 'Login',
+            path: '/login',
+            errorMessage: errors.array()[0].msg,
+            oldInput: {email: email, password: password},
+            validationErrors: errors.array(),
+            // isAuthenticated: false,
+            // csrfToken: req.csrfToken()
+        });
+    }
     User.findOne({email: email})
         .then(user => {
             if (!user) {
@@ -74,6 +89,9 @@ exports.getSignup = (req, res, next) => {
         path: '/signup',
         pageTitle: 'Signup',
         errorMessage: message,
+        oldInput: {email: "", password: "", confirmPassword: ""},
+        validationErrors: [],
+
         // isAuthenticated: false,
         // csrfToken: req.csrfToken()
     });
@@ -84,46 +102,38 @@ exports.postSignup = (req, res, next) => {
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
     const errors = validationResult(req);
-    if (! errors.isEmpty()){
+    if (!errors.isEmpty()) {
+        console.log(errors.array()[0]);
         return res.status(422)
             .render('auth/signup', {
-            path: '/signup',
-            pageTitle: 'Signup',
-            errorMessage: errors.array(),
-            // isAuthenticated: false,
-            // csrfToken: req.csrfToken()
-        });
+                path: '/signup',
+                pageTitle: 'Signup',
+                errorMessage: errors.array()[0].msg,
+                oldInput: {email: email, password: password, confirmPassword: confirmPassword},
+                validationErrors: errors.array(),
+                // isAuthenticated: false,
+                // csrfToken: req.csrfToken()
+            });
     }
-    User.findOne({email: email})
-        .then(userDoc => {
-            if (userDoc) {
-                req.flash('error', 'Email already exists, please pick a different one.')
-                return res.redirect('/signup');
-            }
-            return bcrypt
-                .hash(password, 12)
-                .then(hashedPassword => {
-                    const user = new User({
-                        password: hashedPassword,
-                        email: email,
-                        cart: {
-                            items: []
-                        }
-                    });
-                    return user.save();
-                })
-                .then((_) => {
-                    res.redirect('/login')
-                    return transporter.sendMail({
-                        to: email,
-                        from: '3170601041@std.wise.edu.jo',
-                        subject: 'Signup Completed',
-                        html: '<h1> You Successfully signed up </h1>'
-                    })
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+    bcrypt.hash(password, 12)
+        .then(hashedPassword => {
+            const user = new User({
+                password: hashedPassword,
+                email: email,
+                cart: {
+                    items: []
+                }
+            });
+            return user.save();
+        })
+        .then((_) => {
+            res.redirect('/login')
+            return transporter.sendMail({
+                to: email,
+                from: '3170601041@std.wise.edu.jo',
+                subject: 'Signup Completed',
+                html: '<h1> You Successfully signed up </h1>'
+            })
         })
         .catch(err => {
             console.log(err);
@@ -223,7 +233,7 @@ exports.postNewPassword = (req, res, next) => {
     const newPassword = req.body.password;
     const userId = req.body.userId;
     const passwordToken = req.body.passwordToken;
-    let oldUser ;
+    let oldUser;
     User.findOne(
         {
             resetToken: passwordToken,
@@ -234,13 +244,13 @@ exports.postNewPassword = (req, res, next) => {
             oldUser = user;
             return bcrypt.hash(newPassword, 12);
         })
-        .then(hashedPassword =>{
+        .then(hashedPassword => {
             oldUser.password = hashedPassword;
             oldUser.resetToken = undefined;
             oldUser.resetTokenExpiration = undefined;
             return oldUser.save();
         })
-        .then(result =>{
+        .then(result => {
             console.log("Reseated")
             res.redirect('/login');
         })
