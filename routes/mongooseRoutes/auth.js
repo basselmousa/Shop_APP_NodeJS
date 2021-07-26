@@ -17,10 +17,12 @@ router.post('/login', [
                         return Promise.reject('Invalid Email');
                     }
                 });
-        }),
+        })
+        .normalizeEmail(),
     body('password', 'Please enter a password with only numbers and test and at least 5 characters')
         .isLength({min: 5})
         .isAlphanumeric()
+        .trim()
 ], authController.postLogin);
 
 router.post('/logout', authController.postLogout);
@@ -42,11 +44,14 @@ router.post('/signup',
                         return Promise.reject('Email already exists, please pick a different one.');
                     }
                 });
-        }),
+        })
+        .normalizeEmail(),
         body('password', 'Please enter a password with only numbers and test and at least 5 characters')
             .isLength({min: 5})
-            .isAlphanumeric(),
+            .isAlphanumeric()
+            .trim(),
         body('confirmPassword', 'Password does not matched.')
+            .trim()
             .custom((value, {req}) => {
                 if (value !== req.body.password) {
                     // throw new Error('Password does not matched.');

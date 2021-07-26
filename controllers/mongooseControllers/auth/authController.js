@@ -36,6 +36,7 @@ exports.postLogin = (req, res, next) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+        console.log(errors.array())
         return res.status(422).render('auth/login', {
             pageTitle: 'Login',
             path: '/login',
@@ -49,8 +50,15 @@ exports.postLogin = (req, res, next) => {
     User.findOne({email: email})
         .then(user => {
             if (!user) {
-                req.flash('error', 'Invalid Email')
-                return res.redirect('/login');
+                return res.status(422).render('auth/login', {
+                    pageTitle: 'Login',
+                    path: '/login',
+                    errorMessage: 'Invalid Email',
+                    oldInput: {email: email, password: password},
+                    validationErrors: errors.array(),
+                    // isAuthenticated: false,
+                    // csrfToken: req.csrfToken()
+                });
             }
             bcrypt.compare(password, user.password)
                 .then(doMatch => {
@@ -62,9 +70,15 @@ exports.postLogin = (req, res, next) => {
                             res.redirect('/');
                         })
                     } else {
-                        req.flash('error', 'Invalid Password')
-
-                        res.redirect('/login');
+                        return res.status(422).render('auth/login', {
+                            pageTitle: 'Login',
+                            path: '/login',
+                            errorMessage: 'Invalid Password',
+                            oldInput: {email: email, password: password},
+                            validationErrors: errors.array(),
+                            // isAuthenticated: false,
+                            // csrfToken: req.csrfToken()
+                        });
                     }
                 })
                 .catch(err => {
