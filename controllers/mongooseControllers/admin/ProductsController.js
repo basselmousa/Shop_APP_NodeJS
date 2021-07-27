@@ -84,7 +84,22 @@ exports.postAddProduct = (req, res, next) => {
             res.redirect('/admin/products');
         })
         .catch(err => {
-            console.log(err)
+            res.redirect('/500');
+            // return res.status(500).render('admin/edit-product', {
+            //     pageTitle: 'Add Product',
+            //     path: '/admin/add-product',
+            //     editing: false,
+            //     hasError: true,
+            //     product :{
+            //         title: title,
+            //         description: description,
+            //         imageUrl: imageURl,
+            //         price: price
+            //     },
+            //     errorMessage: "Database operation fail, please try again later",
+            //     validationErrors: []
+            //     // isAuthenticated: req.session.isLoggedIn,
+            // });
         });
     // req.user.createProduct({
     //     title: title,
