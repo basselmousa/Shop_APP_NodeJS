@@ -99,7 +99,6 @@ app.use((req, res, next) => {
     if (!req.session.user) {
         return next();
     }
-    console.log(req.session)
     User.findById(req.session.user._id)
         .then(user => {
             if (!user) {
@@ -109,7 +108,12 @@ app.use((req, res, next) => {
             next();
         })
         .catch(err => {
-            throw new Error(err);
+            /**
+             * Used Inside Promises
+             * Callbacks
+             *
+             */
+            next(new Error(err));
         });
 
 });
@@ -122,6 +126,9 @@ app.use(authRoutes);
 app.get('/500', errorsController.somethingWentWrong500Error);
 app.use(errorsController.notFound404Error);
 
+app.use((error, req, res, next) =>{
+    res.redirect('/500');
+})
 
 // {force:true}
 /**
