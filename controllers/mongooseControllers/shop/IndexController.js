@@ -13,6 +13,10 @@ exports.getIndex = (req, res, next) =>{
                 // csrfToken: req.csrfToken(),
             });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 
 }

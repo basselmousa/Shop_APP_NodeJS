@@ -11,7 +11,9 @@ exports.getProducts = (req, res, next) => {
             });
         })
         .catch(err =>{
-            console.log(err)
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
     /**
      * Old Way Without Sequelize
@@ -38,6 +40,10 @@ exports.getProduct = (req, res, next) => {
             path: '/product-detail/' + productId,
             // isAuthenticated: req.isLoggedIn
         });
-    }).catch(err => console.log(err));
+    }).catch(err => {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
+    });
 
 }

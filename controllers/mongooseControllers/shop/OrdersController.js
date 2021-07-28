@@ -14,7 +14,9 @@ exports.getOrdersMethod = (req, res, next) => {
 
         })
         .catch(err => {
-            console.log(err)
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 
 };
@@ -45,6 +47,8 @@ exports.postOrders = (req, res, next) => {
             res.redirect('/orders');
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 };

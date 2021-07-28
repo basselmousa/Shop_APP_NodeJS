@@ -20,7 +20,11 @@ exports.getProducts = (req, res, next) => {
                 // isAuthenticated: req.session.isLoggedIn,
             });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
 
 
@@ -84,7 +88,9 @@ exports.postAddProduct = (req, res, next) => {
             res.redirect('/admin/products');
         })
         .catch(err => {
-            res.redirect('/500');
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
             // return res.status(500).render('admin/edit-product', {
             //     pageTitle: 'Add Product',
             //     path: '/admin/add-product',
@@ -167,7 +173,9 @@ exports.getEditProduct = (req, res, next) => {
             });
         })
         .catch(err => {
-            console.log(err)
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 };
 
@@ -217,7 +225,9 @@ exports.postEditProduct = (req, res, next) => {
         })
 
         .catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 
 }
@@ -252,7 +262,9 @@ exports.deleteProduct = (req, res, next) => {
         //     res.redirect('/admin/products');
         // })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         })
 
 }
